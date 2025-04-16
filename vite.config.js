@@ -7,7 +7,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 10000,
-    strictPort: true
+    strictPort: true,
+    allowedHosts: ['devstore-taa6.onrender.com']
   },
   preview: {
     host: '0.0.0.0',
