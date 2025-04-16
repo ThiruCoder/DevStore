@@ -8,8 +8,8 @@ const Catagories = () => {
     // const [products, setProducts] = useState<Product[]>([])
     const [categories, setCategories] = useState([])
 
-    const backendUrl = 'https://mern-ecom-backend-q7di.onrender.com'
-    const backendTrilUrl = 'http://localhost:5000'
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     useEffect(() => {
         const getCategoryDetails = async () => {
             try {

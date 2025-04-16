@@ -30,9 +30,8 @@ export default function Add_Cart_Page() {
     const theme = useTheme();
     const navigate = useNavigate();
 
-    const backendUrl = import.meta.env.MODE === 'development'
-        ? 'http://localhost:5000'
-        : 'https://mern-ecom-backend-q7di.onrender.com';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
     const updateQuantity = (id, quantityChange, priceChange, name) => {
         const updateCartItem = async () => {

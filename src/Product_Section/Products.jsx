@@ -34,9 +34,9 @@ export default function ProductsPageWrapper() {
         </Suspense>
     );
 }
-const backendUrl = import.meta.env.MODE === 'development'
-    ? 'http://localhost:5000'
-    : 'https://mern-ecom-backend-q7di.onrender.com';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+
 function ProductsPage() {
     const { id } = useParams()
     const searchParams = 12

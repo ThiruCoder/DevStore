@@ -108,7 +108,7 @@ function Header() {
                             ))}
                         </Menu>
                     </Box>
-                    <CardMedia component={'img'} image={logo} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, height: 40, width: 40, borderRadius: 50, }} />
+                    <CardMedia component={'img'} image={logo} sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, height: { xs: 30, lg: 40, sm: 40, md: 40 }, width: { xs: 30, lg: 40, sm: 40, md: 40 }, borderRadius: 50, ml: { xs: 10 } }} />
                     <Typography
                         variant="h5"
                         noWrap
@@ -120,7 +120,7 @@ function Header() {
                             flexGrow: 1,
                             fontFamily: 'monospace',
                             fontWeight: 700,
-                            letterSpacing: '.3rem',
+                            letterSpacing: { xs: '.2rem', lg: '.3rem', sm: '.3rem', md: '.3rem' },
                             color: 'black',
                             textDecoration: 'none',
                             ':hover': { color: 'brown' }
@@ -148,16 +148,18 @@ function Header() {
                         ))}
                     </Box>
                     <Box sx={{ flexGrow: 0, mr: { xs: 0, md: 8 } }}>
-                        <Tooltip title="Add Cart" sx={{ mr: 2 }}>
-                            <IconButton onClick={() => navigate('/addCart')}>
-                                <PackagePlus />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
+                        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <Tooltip title="Add Cart" sx={{ mr: 2 }}>
+                                <IconButton onClick={() => navigate('/addCart')}>
+                                    <PackagePlus />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Open settings">
+                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                    <Avatar alt="Charipalli Thirumalesh" src="/static/images/avatar/2.jpg" />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
                         <Menu
                             sx={{ mt: '45px' }}
                             id="menu-appbar"

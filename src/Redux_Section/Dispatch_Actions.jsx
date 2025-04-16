@@ -7,8 +7,8 @@ import { GET_PRODUCTS_FAILURE, GET_PRODUCTS_REQUEST, GET_PRODUCTS_SUCCESS, SEARC
 
 export const fetchProducts = () => async (dispatch) => {
     dispatch({ type: GET_PRODUCTS_REQUEST });
-    const backendUrl = 'https://mern-ecom-backend-q7di.onrender.com'
-    const backendTrilUrl = 'http://localhost:5000'
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
     try {
         const response = await axios.get(`${backendUrl}/products/getProducts`);

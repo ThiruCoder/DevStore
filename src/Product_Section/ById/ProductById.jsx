@@ -41,9 +41,7 @@ export default function ProductById() {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    const backendUrl = import.meta.env.MODE === 'development'
-        ? 'http://localhost:5000'
-        : 'https://mern-ecom-backend-q7di.onrender.com';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 
     const fetchProduct = async () => {

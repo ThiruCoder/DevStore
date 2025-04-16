@@ -12,9 +12,8 @@ export default function Purchase_page() {
     const [buyProduct, setBuyProduct] = useState(null)
     const [isHover, setIsHover] = useState(false)
 
-    const backendUrl = import.meta.env.MODE === 'development'
-        ? 'http://localhost:5000'
-        : 'https://mern-ecom-backend-q7di.onrender.com';
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
     const fadeIn = {
         hidden: { opacity: 0, y: 20 },

@@ -45,7 +45,8 @@ const staggerContainer = {
 export default function AboutPage() {
     const [projects, setProjects] = useState([]);
     const [isHover, setIsHover] = useState(!false)
-    const backendUrl = "https://mern-ecom-backend-q7di.onrender.com";
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     const matches = useMediaQuery("(min-width:1000px)");
     const matches1 = useMediaQuery("(min-width:800px)");
 
