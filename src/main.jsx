@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom'
 import store from './Redux_Section/Product_Store.jsx'
 import ScrollToTop from './ScrollToTop.jsx'
 import { ThemeProvider } from '@mui/material/styles'
+import { theme } from './theme.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
