@@ -1,0 +1,239 @@
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.product-banner {
+  width: 100%;
+  max-width: 1000px;
+  height: auto;
+  background: linear-gradient(135deg, #0d6e6e 0%, #00c2a8 50%, #004a7c 100%);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.product-banner::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: white;
+  border-top-left-radius: 50% 20px;
+  border-top-right-radius: 50% 20px;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 10;
+  padding: 2rem;
+}
+
+.banner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.menu-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.product-showcase {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.product-image {
+  flex: 0 0 40%;
+  max-width: 300px;
+}
+
+.speaker-img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+}
+
+.product-info {
+  flex: 1;
+  color: white;
+}
+
+.discount-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.megaphone-icon {
+  display: flex;
+  align-items: center;
+}
+
+.discount-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.discount-percentage {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.discount-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.product-title {
+  margin-top: 1rem;
+}
+
+.quality-text {
+  font-family: "Brush Script MT", cursive;
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: -0.5rem;
+}
+
+.product-heading {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.banner-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  position: relative;
+  z-index: 20;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phone-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #555;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-icon svg {
+  color: white;
+}
+
+.contact-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-label {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.contact-number {
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.shop-now-btn {
+  background-color: #555;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.shop-now-btn:hover {
+  background-color: #444;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .product-showcase {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .product-image {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .discount-badge {
+    justify-content: center;
+  }
+
+  .product-heading {
+    font-size: 3rem;
+  }
+
+  .quality-text {
+    font-size: 1.5rem;
+  }
+
+  .banner-footer {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-content {
+    padding: 1.5rem;
+  }
+
+  .product-heading {
+    font-size: 2.5rem;
+  }
+
+  .quality-text {
+    font-size: 1.2rem;
+  }
+}

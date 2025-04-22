@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -23,25 +23,33 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useDispatch } from 'react-redux';
+import { REMOVE_CART_ITEM } from '../Redux_Section/ReducerType';
+import { fetchCartProducts } from '../Redux_Section/AddCartFunctions';
 
-export default function Add_Cart_Page() {
+export default function Add_Cart_Page({ addCartItems }) {
     const [cartProducts, setCartProducts] = useState([]);
     const [currentQuantity, setCurrentQuantity] = useState(0);
+    const [isDeleted, setIsDeleted] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
-
+    const dispatch = useDispatch()
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 
-    const updateQuantity = (id, quantityChange, priceChange, name) => {
+    const updateQuantity = (_id, quantityChange, priceChange, name) => {
         const updateCartItem = async () => {
+
             try {
-                await axios.put(`${backendUrl}/products/updateAddCartById/${id}`, {
+                await axios.put(`${backendUrl}/products/updateAddCartById/${_id}`, {
                     quantity: quantityChange,
                     totalPrice: priceChange,
                     name: name,
-                }).then((res) => console.log(res))
-                    .catch((err) => console.log(err))
+                })
+
+                setTimeout(() => {
+                    setIsDeleted((prev) => !prev);
+                }, 60);
 
                 // ✅ Optional: Notify user or trigger UI update
                 fetchCartProducts(); // Refresh cart
@@ -56,6 +64,7 @@ export default function Add_Cart_Page() {
     const removeItem = (id) => {
         const deleteCartItem = async () => {
             try {
+                dispatch({ type: REMOVE_CART_ITEM, payload: id })
                 const removeAnItem = await axios.delete(`${backendUrl}/products/deleteAddCartById/${id}`);
                 if (removeAnItem.status === 200) {
                     Swal.fire({
@@ -71,7 +80,9 @@ export default function Add_Cart_Page() {
                         }
                     });
                 }
-                fetchCartProducts();
+                setTimeout(() => {
+                    setIsDeleted((prev) => !prev);
+                }, 200);
             } catch (error) {
                 console.error('Failed to remove item:', error);
                 Swal.fire({
@@ -92,30 +103,34 @@ export default function Add_Cart_Page() {
         deleteCartItem();
     };
 
-    const fetchCartProducts = async () => {
-        try {
-            const response = await axios.get(`${backendUrl}/products/getAddCarts`);
-            setCartProducts(response.data.data);
-            if (response.data.data.length > 0) {
-                setCurrentQuantity(response.data.data[0].quantity);
-            }
-        } catch (error) {
-            console.error('Failed to fetch cart:', error);
-        }
-    };
+    // const fetchCartProducts = async () => {
+    //     try {
+    //         const response = await axios.get(`${backendUrl}/products/getAddCarts`);
+    //         setCartProducts(response.data.data);
+    //         if (response.data.data.length > 0) {
+    //             setCurrentQuantity(response.data.data[0].quantity);
+    //         }
+    //     } catch (error) {
+    //         console.error('Failed to fetch cart:', error);
+    //     }
+    // };
 
     useEffect(() => {
-        fetchCartProducts();
-    }, []);
+        dispatch(fetchCartProducts())
+    }, [dispatch, isDeleted]);
 
-    const quantity = cartProducts.reduce((sum, item) => sum + item.quantity, 0);
-    const subtotal = cartProducts.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
-    const shipping = 10;
-    const tax = subtotal * 0.1;
-    const total = subtotal + shipping + tax;
+
+    const [quantity, subtotal, shipping, tax, total] = useMemo(() => {
+        const quantity = addCartItems?.length > 0 ? addCartItems.reduce((sum, item) => sum + item.quantity, 0) : null;
+        const subtotal = addCartItems?.length > 0 ? addCartItems.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+        ) : null;
+        const shipping = 10;
+        const tax = subtotal * 0.1;
+        const total = subtotal + shipping + tax;
+        return [quantity, subtotal, shipping, tax, total];
+    }, [addCartItems]);
 
     return (
         <motion.div
@@ -133,21 +148,9 @@ export default function Add_Cart_Page() {
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={8}>
                         <Card sx={{ p: 3 }}>
-                            {cartProducts.length === 0 ? (
-                                <Box textAlign="center" py={4}>
-                                    <Typography variant="h6" color="text.secondary" mb={2}>
-                                        Your cart is empty
-                                    </Typography>
-                                    <Button
-                                        variant="contained"
-                                        onClick={() => navigate('/ProductsPage')}
-                                    >
-                                        Continue Shopping
-                                    </Button>
-                                </Box>
-                            ) : (
+                            {addCartItems.length > 0 ? (
                                 <Stack spacing={3}>
-                                    {cartProducts.map((item) => (
+                                    {addCartItems.map((item) => (
                                         <Box key={item._id}>
                                             <Stack direction="row" spacing={2}>
                                                 <Box
@@ -209,6 +212,19 @@ export default function Add_Cart_Page() {
                                         </Box>
                                     ))}
                                 </Stack>
+                            ) : (
+
+                                <Box textAlign="center" py={4}>
+                                    <Typography variant="h6" color="text.secondary" mb={2}>
+                                        Your cart is empty
+                                    </Typography>
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => navigate('/ProductsPage')}
+                                    >
+                                        Continue Shopping
+                                    </Button>
+                                </Box>
                             )}
                         </Card>
                     </Grid>
@@ -225,7 +241,7 @@ export default function Add_Cart_Page() {
                                 </Stack>
                                 <Stack direction="row" justifyContent="space-between">
                                     <Typography>Subtotal</Typography>
-                                    <Typography>${subtotal.toFixed(2)}</Typography>
+                                    <Typography>${subtotal ? subtotal.toFixed(2) : null}</Typography>
                                 </Stack>
                                 <Stack direction="row" justifyContent="space-between">
                                     <Typography>Shipping</Typography>
@@ -255,7 +271,7 @@ export default function Add_Cart_Page() {
                                 fullWidth
                                 size="large"
                                 startIcon={<ShoppingCart size={20} />}
-                                disabled={cartProducts.length === 0}
+                                disabled={addCartItems.length === 0}
                             >
                                 Proceed to Checkout
                             </Button>

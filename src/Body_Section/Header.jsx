@@ -18,7 +18,7 @@ import { AlignJustify, BookUser, HandPlatter, House, PackagePlus, PackageSearch,
 const pages = [
     { title: 'Home', link: "/", tip: 'Home', icon: <House /> },
     { title: 'Products', link: '/ProductsPage', tip: 'Products', icon: <ShoppingBasket /> },
-    { title: 'Services', link: '#', tip: 'Services', icon: <HandPlatter /> },
+    { title: 'Services', link: '/productShowcase', tip: 'Services', icon: <HandPlatter /> },
     { title: 'About', link: "/about", tip: 'About', icon: <PackageSearch /> },
     { title: 'Contact', link: '#', tip: 'Contact', icon: <BookUser /> }
 ];
@@ -58,7 +58,7 @@ function Header() {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -113,7 +113,7 @@ function Header() {
                         variant="h5"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 3,
                             display: { xs: 'flex', md: 'none' },
@@ -159,6 +159,7 @@ function Header() {
                                     <Avatar alt="Charipalli Thirumalesh" src="/static/images/avatar/2.jpg" />
                                 </IconButton>
                             </Tooltip>
+
                         </Box>
                         <Menu
                             sx={{ mt: '45px' }}

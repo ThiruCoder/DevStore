@@ -19,12 +19,16 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../Redux_Section/Dispatch_Actions';
 import { Link, useNavigate } from 'react-router-dom';
+import { CreateToCart } from '../../Redux_Section/AddCartFunctions';
+import ProductShowcase from './product';
 
 
 const ProductCard = ({ sorting, product, className, ...props }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
     return (
         <motion.div
             whileHover={{ y: -5 }}
@@ -177,10 +181,10 @@ const ProductCard = ({ sorting, product, className, ...props }) => {
                                     variant="outlined"
                                     size="small"
                                     startIcon={<ShoppingCart fontSize="small" />}
-                                    onClick={() => CreateAddCart(product)}
+                                    onClick={() => dispatch(CreateToCart(product))}
                                     sx={{ height: 32 }}
                                 >
-                                    Add
+                                    Add cart
                                 </Button>
                             </CardActions>
                         </Box>
@@ -191,7 +195,7 @@ const ProductCard = ({ sorting, product, className, ...props }) => {
                             variant="outlined"
                             size="small"
                             startIcon={<ShoppingCart fontSize="small" />}
-                            onClick={() => CreateAddCart(product)}
+                            onClick={() => dispatch(CreateToCart(product))}
                             sx={{ height: 32 }}
                         >
                             Add
@@ -204,18 +208,9 @@ const ProductCard = ({ sorting, product, className, ...props }) => {
     );
 };
 
-const Products = () => {
+const Products = ({ products }) => {
     const [sorting, setSorting] = useState(true)
-    const dispatch = useDispatch();
-    const { products } = useSelector((state) => state.products)
-    useEffect(() => {
-        setTimeout(() => {
-            dispatch(fetchProducts())
-        }, 1000)
-    }, [])
-
-
-
+    const navigate = useNavigate();
     return (
         <Container component="section" sx={{ py: 6, bgcolor: "rgb(255, 239, 219)", mt: 5, borderRadius: 3 }}>
             <Box
@@ -245,6 +240,22 @@ const Products = () => {
                         Shop our most popular items
                     </Typography>
                 </Box>
+                <Box>
+                    <Button
+                        variant="outlined"
+                        onClick={() => navigate('/ProductsPage')}
+                        sx={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                            backdropFilter: 'blur(6px)',
+                            boxShadow: 'none',
+                            color: 'GrayText',
+                            top: 0,
+                            fontWeight: 800
+                        }}
+                    >
+                        View Products &rarr;
+                    </Button>
+                </Box>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Grid container spacing={4} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
@@ -252,9 +263,10 @@ const Products = () => {
                         <Grid item xs={12} sm={12} md={5} lg={4} key={product._id}>
                             <ProductCard product={product} sorting={sorting} />
                         </Grid>
-                    ))}
+                    )).slice(0, 3)}
                 </Grid>
             </Box>
+
         </Container>
     );
 };

@@ -29,7 +29,7 @@ const features = [
     }
 ];
 
-const HeroSection = () => {
+const HeroSection = ({ products }) => {
     const theme = useTheme();
     const matches = useMediaQuery('(min-width:600px)');
     return (
@@ -37,10 +37,11 @@ const HeroSection = () => {
             <Box
                 sx={{
                     position: 'relative',
-                    height: '72vh',
+                    height: '80vh',
                     maxHeight: '700px',
                     width: '100%',
                     overflow: 'hidden',
+
                 }}
             >
                 {/* Background Image */}
@@ -59,7 +60,7 @@ const HeroSection = () => {
                         component="img"
                         image="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop"
                         alt="Hero"
-                        sx={{ objectFit: 'cover', height: '100%' }}
+                        sx={{ objectFit: 'cover', height: '100%', backgroundImage: 'linear-gradient(to top, rgba(0, 10, 0, 4.6), transparent)' }}
                     />
                 </Box>
 
@@ -189,7 +190,7 @@ const HeroSection = () => {
                 </Box>
             </Box>
             <Catagories />
-            <Products />
+            <Products products={products} />
 
             {/* Special Offers */}
             <Container sx={{ mt: 10 }}>

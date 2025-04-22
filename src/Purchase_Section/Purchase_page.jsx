@@ -129,16 +129,18 @@ export default function Purchase_page() {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                 >
-                                    <Button
-                                        variant="contained"
-                                        size="large"
-                                        fullWidth
-                                        className="mt-6"
-                                        sx={{ pt: 1.8 }}
-                                        startIcon={<ShoppingCart className="w-5 h-5" />}
-                                    >
-                                        Complete Purchase
-                                    </Button>
+                                    <a href="upi://pay?pa=yourupiaddress&pn=YourName&mc=1234&tid=txnId&am=amount&cu=INR&url=https://yourwebsite.com">
+                                        <Button
+                                            variant="contained"
+                                            size="large"
+                                            fullWidth
+                                            className="mt-6"
+                                            sx={{ pt: 1.8 }}
+                                            startIcon={<ShoppingCart className="w-5 h-5" />}
+                                        >
+                                            Complete Purchase
+                                        </Button>
+                                    </a>
                                 </motion.div>
                             </Box>
 

@@ -26,18 +26,21 @@ import { Suspense } from "react";
 import { CircleChevronDown, CircleX, LayoutGrid, List, ListFilterPlus, ListStart, RefreshCw, Search, Star } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import { CreateToCart } from "../Redux_Section/AddCartFunctions";
 
-export default function ProductsPageWrapper() {
+export default function ProductsPageWrapper({ products }) {
+
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <ProductsPage />
+            <ProductsPage products={products} />
         </Suspense>
     );
 }
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 
-function ProductsPage() {
+function ProductsPage({ products }) {
     const { id } = useParams()
     const searchParams = 12
     const categoryParam = 12
@@ -49,26 +52,12 @@ function ProductsPage() {
     const [sortOption, setSortOption] = useState("featured");
     const [viewMode, setViewMode] = useState("grid");
     const [showFilters, setShowFilters] = useState(false);
-    const [products, setProducts] = useState([]);
+    // const [products, setProducts] = useState([]);
     const [grids, setGrids] = useState(false)
     const [refrest, setRefresh] = useState(false)
 
 
     const navigate = useNavigate()
-
-    const getProjectDetails = async () => {
-        try {
-            await axios.get(`${backendUrl}/products/getProducts`)
-                .then((response) => setProducts(response.data))
-                .catch((error) => console.log(error));
-        } catch (error) {
-            console.error('Failed to fetch project details:', error);
-        }
-    };
-
-    useEffect(() => {
-        getProjectDetails();
-    }, []);
 
     // ✅ Debounce function
     const debounceFunction = (func, delay) => {
@@ -416,45 +405,13 @@ function ProductsPage() {
 // Example ProductCard component (you'll need to implement this)
 function ProductCard({ product, viewMode, variant = 'grid' }) {
     const navigate = useNavigate()
-    const handleAddCartItem = (prod) => {
-        const handleFunction = async () => {
-            try {
-                const createCart = await axios.post(`${backendUrl}/products/createAddCart`, prod, {
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-                if (createCart) {
-                    const showToast = (message, icon = 'success') => {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end', // top-right corner
-                            icon: icon, // 'success', 'error', 'warning', 'info', or 'question'
-                            title: message,
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.style.top = '60px'; // 👈 set custom top distance
-                            }
-                        });
-                    };
-                    showToast('Created to add cart')
-                }
-            } catch (error) {
-                console.error('Failed to fetch project details:', error);
-            }
-        }
-        handleFunction()
-    }
-
+    const dispatch = useDispatch()
+    const adder = useSelector((state) => state?.products?.addCartItems)
 
 
     return (
         <>
-            <Box component={motion.div} initial={{ y: '100vh', opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }} sx={{ p: 2, width: '100%', height: '100%', position: 'relative', transition: '0.2s ease-in', display: 'flex', flexDirection: viewMode === 'grid' ? 'column' : 'row' }}>
+            <Box component={motion.div} sx={{ p: 2, width: '100%', height: '100%', position: 'relative', transition: '0.2s ease-in', display: 'flex', flexDirection: viewMode === 'grid' ? 'column' : 'row' }}>
 
                 <CardMedia image={product?.images[0]} onClick={() => navigate(`/Products/${product?._id}`)} component={'img'} sx={{ width: 200, height: 200, borderRadius: 2 }} />
                 <span style={{ position: 'absolute', top: 22, right: viewMode === 'grid' ? 86 : 72, fontWeight: 700, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -494,13 +451,13 @@ function ProductCard({ product, viewMode, variant = 'grid' }) {
                     </Box>
                     <Box lg={4} sx={{ display: viewMode === 'grid' ? 'flex' : 'none', justifyContent: viewMode === 'grid' ? 'space-between' : null, alignItems: 'center', flexDirection: viewMode === 'grid' ? 'row' : 'column', mt: 2 }}>
                         <Typography sx={{ fontWeight: 700, }}>${product?.price}</Typography>
-                        <Button sx={{ position: 'relative', right: viewMode === 'grid' ? 44 : 0 }} onClick={() => handleAddCartItem(product)}>Add cart</Button>
+                        <Button sx={{ position: 'relative', right: viewMode === 'grid' ? 44 : 0 }} onClick={() => dispatch(CreateToCart(product))}>Add cart</Button>
                     </Box>
                     <Box sx={{ display: viewMode === 'grid' ? 'none' : 'flex', flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                         <Typography sx={{ position: 'relative', left: 20, fontSize: 22 }}>${product?.price}</Typography>
                         <Typography sx={{ fontSize: 12, position: 'relative', top: 1.3, fontStyle: 'oblique' }}>{product?.discount}</Typography>
                     </Box>
-                    <Button sx={{ display: viewMode === 'grid' ? 'none' : 'flex', position: 'relative', left: 10 }} onClick={() => handleAddCartItem(product)}>Add cart</Button>
+                    <Button sx={{ display: viewMode === 'grid' ? 'none' : 'flex', position: 'relative', left: 10 }} onClick={() => dispatch(CreateToCart(product))}>Add cart</Button>
                 </Box>
 
             </Box>

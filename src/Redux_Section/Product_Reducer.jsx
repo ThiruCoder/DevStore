@@ -21,6 +21,7 @@ const productReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 products: action.payload,
+                filteredProducts: action.payload, // Initialize filteredProducts with all products
             };
         case GET_PRODUCTS_FAILURE:
             return {
@@ -28,6 +29,17 @@ const productReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload,
             };
+        case 'FILTER_PRODUCTS':
+            const { category, priceRange } = action.payload;
+            const filteredProducts = state.products.filter((product) => {
+                const matchesCategory = category ? product.category === category : true;
+                const matchesPrice = priceRange ? product.price <= priceRange : true;
+                return matchesCategory && matchesPrice;
+            });
+            return {
+                ...state,
+                filteredProducts: filteredProducts,
+            }
         case SORT_PRODUCTS:
             const sortedProducts = [...state.products].sort((a, b) => {
                 if (action.payload === 'price-asc') {

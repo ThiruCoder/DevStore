@@ -27,6 +27,8 @@ import {
     CreditCard
 } from 'lucide-react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { CreateToCart } from '../../Redux_Section/AddCartFunctions';
 
 export default function ProductById() {
     const [selectedImage, setSelectedImage] = useState(0);
@@ -36,22 +38,27 @@ export default function ProductById() {
     const [error, setError] = useState(null);
     const [selectedColor, setSelectedColor] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
+    const [mouseEntered, setMouseEntered] = useState(false);
+    const [clickCount, setClickCount] = useState(0);
 
     const theme = useTheme();
     const navigate = useNavigate();
     const { id } = useParams();
-
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
+    const dispatch = useDispatch();
 
     const fetchProduct = async () => {
+
         try {
             setLoading(true);
             const response = await axios.post(`${backendUrl}/products/getProductsById/${id}`);
-            setProduct(response.data.data);
+            handleSavedProduct(response.data.data);
 
             if (response.data.data.colors?.length) {
                 setSelectedColor(response.data.data.colors[0]);
+            }
+            if (response?.data?.data?.quantity) {
+                setQuantity(response.data.data.quantity);
             }
             if (response.data.data.sizes?.length) {
                 setSelectedSize(response.data.data.sizes[0]);
@@ -67,6 +74,16 @@ export default function ProductById() {
         fetchProduct();
     }, [id]);
 
+    const handleSavedProduct = (product) => {
+        setProduct(product);
+        if (product.quantity) {
+            setQuantity(product.quantity);
+        } else {
+            setQuantity(1);
+        }
+    }
+
+
     if (loading) {
         return (
             <Container sx={{ py: 4, textAlign: 'center' }}>
@@ -80,15 +97,6 @@ export default function ProductById() {
         return null;
     }
 
-    const handleAddToCart = () => {
-        // Add to cart logic here
-        console.log('Added to cart:', {
-            productId: product._id,
-            quantity,
-            color: selectedColor,
-            size: selectedSize
-        });
-    };
 
     const updateQuantity = (id, quantityChange, priceChange, name) => {
         const updateCartItem = async () => {
@@ -101,12 +109,10 @@ export default function ProductById() {
                 }).then((res) => console.log(res))
                     .catch((err) => console.log(err))
 
-                fetchProduct();
             } catch (error) {
                 console.error('❌ Failed to update cart:', error.response.data.message || error.message);
             }
         };
-
         updateCartItem();
     };
 
@@ -129,8 +135,9 @@ export default function ProductById() {
                 <Grid container spacing={4} mb={6}>
                     {/* Product Images */}
                     <Grid item xs={12} md={6}>
-                        <Stack spacing={2}>
+                        <Stack spacing={2} component={'div'} >
                             <Box
+                                component={'div'}
                                 sx={{
                                     aspectRatio: '1/1',
                                     overflow: 'hidden',
@@ -138,6 +145,7 @@ export default function ProductById() {
                                     bgcolor: 'background.paper',
                                     position: 'relative'
                                 }}
+                                onMouseEnter={() => setMouseEntered(true)} onMouseLeave={() => setMouseEntered(false)}
                             >
                                 <CardMedia
                                     component={'img'}
@@ -146,7 +154,10 @@ export default function ProductById() {
                                     sx={{
                                         width: '100%',
                                         height: '100%',
-                                        objectFit: 'cover'
+                                        objectFit: 'cover',
+                                        transform: mouseEntered ? 'scale(1.05)' : 'scale(1)',
+                                        transition: 'transform 0.3s ease',
+                                        filter: mouseEntered ? 'brightness(0.8)' : 'none',
                                     }}
                                 />
                                 {product.discount && (
@@ -182,7 +193,7 @@ export default function ProductById() {
                                             sx={{
                                                 width: 70,
                                                 height: '100%',
-                                                objectFit: 'cover'
+                                                objectFit: 'cover',
                                             }}
                                         />
                                     </IconButton>
@@ -327,19 +338,25 @@ export default function ProductById() {
                                         <Stack direction="row" alignItems="center">
                                             <Button
                                                 variant="outlined"
-                                                onClick={() => updateQuantity(product?._id, -1, product?.price, product?.id)}
-                                                disabled={product?.quantity <= 1}
+                                                onClick={() => {
+                                                    updateQuantity(product?._id, -1, product?.price, product?.id)
+                                                    setQuantity((prev) => prev - 1);
+                                                }}
+                                                disabled={quantity <= 1}
                                                 sx={{ minWidth: 36, height: 36 }}
                                                 type='button'
                                             >
                                                 -
                                             </Button>
                                             <Typography width={48} textAlign="center">
-                                                {product?.quantity ? product?.quantity : quantity}
+                                                {quantity}
                                             </Typography>
                                             <Button
                                                 variant="outlined"
-                                                onClick={() => updateQuantity(product?._id, 1, product?.price, product?.id)}
+                                                onClick={() => {
+                                                    updateQuantity(product?._id, 1, product?.price, product?.id)
+                                                    setQuantity((prev) => prev + 1);
+                                                }}
                                                 disabled={product?.quantity >= product.stock}
                                                 sx={{ minWidth: 36, height: 36 }}
                                                 type='button'
@@ -356,8 +373,13 @@ export default function ProductById() {
                                         fullWidth
                                         size="large"
                                         startIcon={<ShoppingCart size={20} />}
-                                        onClick={handleAddToCart}
-                                        disabled={product.stock <= 0}
+                                        onClick={() => {
+                                            dispatch(CreateToCart(product))
+                                            setClickCount((prevCount) => prevCount + 1);
+                                        }}
+                                        disabled={
+                                            product.stock <= 0 || clickCount > 0
+                                        }
                                     >
                                         Add to Cart
                                     </Button>
@@ -450,7 +472,7 @@ export default function ProductById() {
                     </Grid>
                 </Grid>
 
-            </Container>
-        </motion.div>
+            </Container >
+        </motion.div >
     );
 }

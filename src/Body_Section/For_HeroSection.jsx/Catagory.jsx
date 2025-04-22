@@ -20,7 +20,6 @@ const Catagories = () => {
                 console.error('Failed to fetch project details:', error);
             }
         };
-
         getCategoryDetails();
     }, []);
 
